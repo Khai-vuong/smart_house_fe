@@ -29,6 +29,15 @@ function ControlPage() {
     });
   }
 
+  // function applyChanges() {
+  //   if (shapes.selectedElement) {
+  //     updateElement(shapes.selectedElement.id, {   //Change the function name
+  //       backgroundColor: newColor,
+  //       zIndex: parseInt(newZIndex, 10),
+  //     });
+  //   }
+  // }
+
   return (
     <div className="flex flex-row gap-4 w-screen h-screen bg-blue-300">
       <NavBar selecting={1} className="left"></NavBar>
@@ -53,7 +62,19 @@ function ControlPage() {
         </div>
       </section>
 
-      <section className="right flex-grow bg-red-300 h-screen">Hello</section>
+      <section className="right flex-grow bg-red-300 h-screen p-4">
+        <h2 className="text-xl font-bold">Selected Elements</h2>
+        {shapes.selectedElement ? (
+          <div>
+            <p>Id: {shapes.selectedElement.id}</p>
+            <p>Type: {shapes.selectedElement.type}</p>
+            <p>X: {shapes.selectedElement.x}</p>
+            <p>Y: {shapes.selectedElement.y}</p>
+          </div>
+        ) : (
+          <p>No selected element</p>
+        )}
+      </section>
     </div>
   );
 }
