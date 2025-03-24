@@ -41,8 +41,44 @@ function ControlPage() {
       y: 0,
       width: 100,
       height: 100,
-      Lable: `Rectangle ${rectangle_count}`,
+      label: `Rectangle ${rectangle_count}`,
       color: "0000ff",
+    });
+  }
+
+  function addSensor() {
+    alert("Sensor added" + sensor_count);
+
+    setSensor_count(sensor_count + 1);
+    shapes.addElement({
+      // Add to Zustand
+      id: `sensor-${rectangle_count}`,
+      type: "sensor",
+      x: 0,
+      y: 0,
+      width: 50,
+      height: 50,
+      label: `Sensor ${rectangle_count}`,
+      color: "00ff00",
+      data: null,
+    });
+  }
+
+  function addDevice() {
+    alert("Device added" + sensor_count);
+
+    setDevice_count(device_count + 1);
+    shapes.addElement({
+      // Add to Zustand
+      id: `device-${rectangle_count}`,
+      type: "device",
+      x: 0,
+      y: 0,
+      width: 50,
+      height: 50,
+      label: `Device ${rectangle_count}`,
+      color: "ff0000",
+      data: null,
     });
   }
 
@@ -64,8 +100,12 @@ function ControlPage() {
           className="bg-purple-300 flex-grow-1 flex flex-row"
         >
           <div className="buttons flex flex-col gap-2 w-1/4 mt-4 ml-4">
-            <button className="btn btn-warning">Add sensor</button>
-            <button className="btn btn-warning">Add devide</button>
+            <button onClick={addSensor} className="btn btn-warning">
+              Add sensor
+            </button>
+            <button onClick={addDevice} className="btn btn-warning">
+              Add devide
+            </button>
             <button onClick={addRectangle} className="btn btn-warning">
               Add rectangle
             </button>
