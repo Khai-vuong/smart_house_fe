@@ -1,8 +1,26 @@
 import NavBar from "../components/Navbar.jsx";
 import Drag_n_drop from "../components/Drag_n_drop.jsx";
 
-export default function ControlPage() {
-  let maxFloor = 2;
+function ControlPage() {
+  // const maxFloor = 2;
+
+  // const [rectangle_count, setRectangle_count] = useState(0);
+  // const [floor_count, setFloor_count] = useState(0);
+  // const [device_count, setDevice_count] = useState(0);
+  // const [sensor_count, setSensor_count] = useState(0);
+
+  // function addRectangle() {
+  //   setRectangle_count(rectangle_count + 1);
+  // addElement({
+  //   //Add to Zustand
+  //   id: `rectangle-${rectangle_count}`,
+  //   type: "rectangle",
+  //   x: 0,
+  //   y: 0,
+  //   width: 100,
+  //   height: 100,
+  // });
+  // }
 
   return (
     <div className="flex flex-row gap-4 w-screen h-screen bg-blue-300">
@@ -30,3 +48,5 @@ export default function ControlPage() {
     </div>
   );
 }
+
+export default ControlPage;
