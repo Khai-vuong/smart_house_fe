@@ -1,7 +1,8 @@
 import NavBar from "../components/Navbar.jsx";
 import Drag_n_drop from "../components/Drag_n_drop.jsx";
+import ItemPanel from "../components/ItemPanel.jsx";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useStore from "../utils/useStore.js";
 
 function ControlPage() {
@@ -14,8 +15,22 @@ function ControlPage() {
   const [device_count, setDevice_count] = useState(0);
   const [sensor_count, setSensor_count] = useState(0);
 
+  useEffect(() => {
+    const savedItems = localStorage.getItem("dragItems");
+    if (savedItems) {
+      const parsedItems = JSON.parse(savedItems); // Convert string to array
+      console.log(parsedItems);
+
+      parsedItems.forEach((item) => {
+        if (item.type === "rectangle") setRectangle_count((prev) => prev + 1);
+        else if (item.type === "device") setDevice_count((prev) => prev + 1);
+        else if (item.type === "sensor") setSensor_count((prev) => prev + 1);
+      });
+    }
+  }, []);
+
   function addRectangle() {
-    alert("Rectangle added");
+    alert("Rectangle added" + rectangle_count);
 
     setRectangle_count(rectangle_count + 1);
     shapes.addElement({
@@ -26,17 +41,14 @@ function ControlPage() {
       y: 0,
       width: 100,
       height: 100,
+      Lable: `Rectangle ${rectangle_count}`,
+      color: "0000ff",
     });
   }
 
-  // function applyChanges() {
-  //   if (shapes.selectedElement) {
-  //     updateElement(shapes.selectedElement.id, {   //Change the function name
-  //       backgroundColor: newColor,
-  //       zIndex: parseInt(newZIndex, 10),
-  //     });
-  //   }
-  // }
+  function resetLocalStorage() {
+    localStorage.removeItem("dragItems");
+  }
 
   return (
     <div className="flex flex-row gap-4 w-screen h-screen bg-blue-300">
@@ -57,23 +69,16 @@ function ControlPage() {
             <button onClick={addRectangle} className="btn btn-warning">
               Add rectangle
             </button>
-            <button className="btn btn-warning">Add floor</button>
+            <button onClick={resetLocalStorage} className="btn btn-warning">
+              Add floor
+            </button>
           </div>
         </div>
       </section>
 
       <section className="right flex-grow bg-red-300 h-screen p-4">
         <h2 className="text-xl font-bold">Selected Elements</h2>
-        {shapes.selectedElement ? (
-          <div>
-            <p>Id: {shapes.selectedElement.id}</p>
-            <p>Type: {shapes.selectedElement.type}</p>
-            <p>X: {shapes.selectedElement.x}</p>
-            <p>Y: {shapes.selectedElement.y}</p>
-          </div>
-        ) : (
-          <p>No selected element</p>
-        )}
+        <ItemPanel itemInfo={shapes.selectedElement}></ItemPanel>
       </section>
     </div>
   );
