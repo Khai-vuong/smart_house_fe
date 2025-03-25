@@ -1,31 +1,49 @@
-const rectangle = {
-    id: "area1",
-    x: 50,
-    y: 50,
-    type: "rectangle",
+import useStore from "./useStore";
 
-    //Only for rectangle
-    width: 200,
-    height: 150,
-    label: "Living Room",
-    color: "#FFD700"
-  };
+export default function template() {
+  return {
+    rectangle: (num) => {
+      return {
+        id: `rectangle-${num}`,
+        type: "rectangle",
+        x: 0,
+        y: 0,
+        z: useStore.getState().items.length,
+        width: 100,
+        height: 100,
+        label: `Rectangle ${num}`,
+        color: "ff0000",
+      };
+    },
   
-  const device = {
-    id: "device1",
-    x: 120,
-    y: 80,
-    type: "device",
-    label: "Router",
-    data: { status: "online", ip: "192.168.1.1" }
-  };
+    sensor: (num) => {
+      return {
+        id: `sensor-${num}`,
+        type: "sensor",
+        x: 0,
+        y: 0,
+        z: useStore.getState().items.length,
+        width: 50,
+        height: 50,
+        label: `Sensor ${num}`,
+        color: "00ff00",
+        data: null,
+      };
+    },
   
-  const sensor = {
-    id: "sensor1",
-    x: 180,
-    y: 200,
-    type: "sensor",
-    label: "Temperature Sensor",
-    data: { temperature: 25.4, unit: "°C" }
+    device: (num) => {
+      return {
+        id: `device-${num}`,
+        type: "device",
+        x: 0,
+        y: 0,
+        z: useStore.getState().items.length,
+        width: 50,
+        height: 50,
+        label: `Device ${num}`,
+        color: "ff0000",
+        data: null,
+      };
+    }
   };
-  
+}

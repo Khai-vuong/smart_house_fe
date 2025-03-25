@@ -30,6 +30,15 @@ const useStore = create((set) => ({
     set((state) => ({
       selectedElement: state.items.find((el) => el.id === id) || null,
     })),
+
+    changeStyle: (id, newStyle) =>
+      set((state) => {
+        const updatedItems = state.items.map((el) =>
+          el.id === id ? { ...el, ...newStyle } : el
+        );
+        localStorage.setItem("dragItems", JSON.stringify(updatedItems)); // Save to localStorage
+        return { items: updatedItems };
+      }),
 }));
 
 export default useStore;

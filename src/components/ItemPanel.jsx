@@ -2,8 +2,11 @@ export default function ItemPanel({ itemInfo }) {
   if (!itemInfo) return <p>No selected element</p>;
   return (
     <>
-      <div className="grid grid-cols-2 gap-4 p-4 border border-gray-300 rounded-lg mt-4 w-full">
-        <label className="flex flex-col border p-2 rounded">
+      <div
+        className="grid grid-cols-2 gap-4 p-4 mt-4 w-full"
+        style={{ backgroundColor: itemInfo.color || "transparent" }}
+      >
+        <label className="flex flex-col ">
           Width:
           <input
             type="text"
@@ -13,7 +16,7 @@ export default function ItemPanel({ itemInfo }) {
           />
         </label>
 
-        <label className="flex flex-col border p-2 rounded">
+        <label className="flex flex-col ">
           Height:
           <input
             type="text"
@@ -23,7 +26,7 @@ export default function ItemPanel({ itemInfo }) {
           />
         </label>
 
-        <label className="flex flex-col border p-2 rounded">
+        <label className="flex flex-col ">
           Label:
           <input
             type="text"
@@ -33,7 +36,7 @@ export default function ItemPanel({ itemInfo }) {
           />
         </label>
 
-        <label className="flex flex-col border p-2 rounded">
+        <label className="flex flex-col ">
           Color:
           <input
             type="text"
@@ -42,6 +45,25 @@ export default function ItemPanel({ itemInfo }) {
             className="border p-1 rounded"
           />
         </label>
+        <label className="flex flex-col ">
+          Z:
+          <input
+            type="text"
+            name="z"
+            placeholder={itemInfo.z || "Enter z level"}
+            className="border p-1 rounded"
+          />
+        </label>
+        <div
+          className="bg-color rounded-2xl text-center"
+          style={{
+            backgroundColor: itemInfo.color
+              ? `#${itemInfo.color}`
+              : "transparent",
+          }}
+        >
+          {itemInfo.color}
+        </div>
       </div>
 
       <div className="description mt-3 text-xl">

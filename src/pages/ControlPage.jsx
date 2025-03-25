@@ -1,6 +1,7 @@
 import NavBar from "../components/Navbar.jsx";
 import Drag_n_drop from "../components/Drag_n_drop.jsx";
 import ItemPanel from "../components/ItemPanel.jsx";
+import template from "../utils/dragable_template.js";
 
 import { useEffect, useState } from "react";
 import useStore from "../utils/useStore.js";
@@ -9,6 +10,7 @@ function ControlPage() {
   // Ensure useStore is correctly used
   const shapes = useStore();
   const maxFloor = 2;
+  const shapeTemplate = template();
 
   const [rectangle_count, setRectangle_count] = useState(0);
   const [floor_count, setFloor_count] = useState(0);
@@ -33,53 +35,22 @@ function ControlPage() {
     alert("Rectangle added" + rectangle_count);
 
     setRectangle_count(rectangle_count + 1);
-    shapes.addElement({
-      // Add to Zustand
-      id: `rectangle-${rectangle_count}`,
-      type: "rectangle",
-      x: 0,
-      y: 0,
-      width: 100,
-      height: 100,
-      label: `Rectangle ${rectangle_count}`,
-      color: "0000ff",
-    });
+
+    shapes.addElement(shapeTemplate.rectangle(rectangle_count));
   }
 
   function addSensor() {
     alert("Sensor added" + sensor_count);
 
     setSensor_count(sensor_count + 1);
-    shapes.addElement({
-      // Add to Zustand
-      id: `sensor-${rectangle_count}`,
-      type: "sensor",
-      x: 0,
-      y: 0,
-      width: 50,
-      height: 50,
-      label: `Sensor ${rectangle_count}`,
-      color: "00ff00",
-      data: null,
-    });
+    shapes.addElement(shapeTemplate.sensor(sensor_count));
   }
 
   function addDevice() {
     alert("Device added" + sensor_count);
 
     setDevice_count(device_count + 1);
-    shapes.addElement({
-      // Add to Zustand
-      id: `device-${rectangle_count}`,
-      type: "device",
-      x: 0,
-      y: 0,
-      width: 50,
-      height: 50,
-      label: `Device ${rectangle_count}`,
-      color: "ff0000",
-      data: null,
-    });
+    shapes.addElement(shapeTemplate.device(device_count));
   }
 
   function resetLocalStorage() {
