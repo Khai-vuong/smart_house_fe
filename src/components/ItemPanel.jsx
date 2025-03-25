@@ -1,4 +1,38 @@
+import useStore from "../utils/useStore";
+import { useState, useEffect } from "react";
+
 export default function ItemPanel({ itemInfo }) {
+  const changeStyle = useStore((state) => state.changeStyle);
+
+  const [formData, setFormData] = useState({
+    width: "",
+    height: "",
+    label: "",
+    color: "",
+    z: "",
+  });
+
+  useEffect(() => {
+    if (itemInfo) {
+      setFormData({
+        width: itemInfo.width || "",
+        height: itemInfo.height || "",
+        label: itemInfo.label || "",
+        color: itemInfo.color || "",
+        z: itemInfo.z || "",
+      });
+    }
+  }, [itemInfo]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    if (itemInfo?.id) {
+      changeStyle(itemInfo.id, { [name]: value });
+    }
+  };
+
   if (!itemInfo) return <p>No selected element</p>;
   return (
     <>
@@ -6,55 +40,21 @@ export default function ItemPanel({ itemInfo }) {
         className="grid grid-cols-2 gap-4 p-4 mt-4 w-full"
         style={{ backgroundColor: itemInfo.color || "transparent" }}
       >
-        <label className="flex flex-col ">
-          Width:
-          <input
-            type="text"
-            name="width"
-            placeholder={itemInfo.width || "Enter width"}
-            className="border p-1 rounded"
-          />
-        </label>
-
-        <label className="flex flex-col ">
-          Height:
-          <input
-            type="text"
-            name="height"
-            placeholder={itemInfo.height || "Enter height"}
-            className="border p-1 rounded"
-          />
-        </label>
-
-        <label className="flex flex-col ">
-          Label:
-          <input
-            type="text"
-            name="label"
-            placeholder={itemInfo.label || "Enter label"}
-            className="border p-1 rounded"
-          />
-        </label>
-
-        <label className="flex flex-col ">
-          Color:
-          <input
-            type="text"
-            name="color"
-            placeholder={itemInfo.color || "Enter color"}
-            className="border p-1 rounded"
-          />
-        </label>
-        <label className="flex flex-col ">
-          Z:
-          <input
-            type="text"
-            name="z"
-            placeholder={itemInfo.z || "Enter z level"}
-            className="border p-1 rounded"
-          />
-        </label>
+        {["width", "height", "label", "color", "z"].map((key) => (
+          <label key={key} className="flex flex-col">
+            {key}:
+            <input
+              type="text"
+              name={key}
+              value={formData[key]}
+              onChange={handleChange}
+              placeholder={`Enter ${key}`}
+              className="border p-1 rounded"
+            />
+          </label>
+        ))}
         <div
+          id="item-panel__color-display"
           className="bg-color rounded-2xl text-center"
           style={{
             backgroundColor: itemInfo.color

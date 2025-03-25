@@ -32,23 +32,17 @@ function ControlPage() {
   }, []);
 
   function addRectangle() {
-    alert("Rectangle added" + rectangle_count);
-
     setRectangle_count(rectangle_count + 1);
 
     shapes.addElement(shapeTemplate.rectangle(rectangle_count));
   }
 
   function addSensor() {
-    alert("Sensor added" + sensor_count);
-
     setSensor_count(sensor_count + 1);
     shapes.addElement(shapeTemplate.sensor(sensor_count));
   }
 
   function addDevice() {
-    alert("Device added" + sensor_count);
-
     setDevice_count(device_count + 1);
     shapes.addElement(shapeTemplate.device(device_count));
   }
@@ -75,7 +69,7 @@ function ControlPage() {
               Add sensor
             </button>
             <button onClick={addDevice} className="btn btn-warning">
-              Add devide
+              Add device
             </button>
             <button onClick={addRectangle} className="btn btn-warning">
               Add rectangle

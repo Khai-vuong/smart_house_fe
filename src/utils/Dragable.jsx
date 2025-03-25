@@ -3,7 +3,9 @@ import useStore from "../utils/useStore";
 
 const Draggable = ({ id }) => {
   const { items, selectElement } = useStore();
-  const { x, y } = items.find((el) => el.id === id) || { x: 0, y: 0 };
+
+  const item = useStore((state) => state.items.find((el) => el.id === id));
+  const { x, y, z, width, height, color, label } = item;
 
   const { attributes, listeners, setNodeRef, transform } = useDraggable({ id });
 
@@ -11,9 +13,9 @@ const Draggable = ({ id }) => {
     position: "absolute",
     left: `${x}px`,
     top: `${y}px`,
-    width: "100px",
-    height: "100px",
-    backgroundColor: "lightblue",
+    width: `${width}px`,
+    height: `${height}px`,
+    backgroundColor: `#${color}`,
     cursor: "grab",
     transform: transform
       ? `translate(${transform.x}px, ${transform.y}px)`
@@ -21,7 +23,6 @@ const Draggable = ({ id }) => {
   };
 
   function clickHandler() {
-    alert("Element clicked");
     selectElement(id);
   }
 
@@ -33,7 +34,7 @@ const Draggable = ({ id }) => {
       style={style}
       onPointerUp={clickHandler}
     >
-      {id}
+      {label}
     </div>
   );
 };

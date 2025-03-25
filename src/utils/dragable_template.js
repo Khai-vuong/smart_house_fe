@@ -12,7 +12,7 @@ export default function template() {
         width: 100,
         height: 100,
         label: `Rectangle ${num}`,
-        color: "ff0000",
+        color: "0000ff",
       };
     },
   
