@@ -5,11 +5,12 @@ import ItemPanel from "../components/ItemPanel.jsx";
 import template from "../utils/dragable_template.js";
 
 import { useEffect, useState } from "react";
-import useStore from "../utils/useStore.js";
+import useStore from "../utils/useStoreNew.js"; //Fix this
+import { getMockApi } from "../utils/mock.js"; //Fix this
 
 function ControlPage() {
   // Ensure useStore is correctly used
-  const shapes = useStore();
+  const storage = useStore();
   const shapeTemplate = template();
 
   const [rectangle_count, setRectangle_count] = useState(0);
@@ -18,42 +19,35 @@ function ControlPage() {
   const [sensor_count, setSensor_count] = useState(0);
 
   useEffect(() => {
-    const savedItems = localStorage.getItem("dragItems");
-    if (savedItems) {
-      const parsedItems = JSON.parse(savedItems); // Convert string to array
-      console.log(parsedItems);
-
-      parsedItems.forEach((item) => {
-        if (item.type === "rectangle") setRectangle_count((prev) => prev + 1);
-        else if (item.type === "device") setDevice_count((prev) => prev + 1);
-        else if (item.type === "sensor") setSensor_count((prev) => prev + 1);
-      });
-    }
+    const house = getMockApi();
+    house.floors.forEach((floor) => {
+      storage.addFloor(shapeTemplate.importFloor(floor));
+    });
   }, []);
 
   function addRectangle() {
     setRectangle_count(rectangle_count + 1);
 
-    shapes.addElement(shapeTemplate.rectangle(rectangle_count));
+    storage.addElement(shapeTemplate.rectangle(rectangle_count));
   }
 
   function addSensor() {
     setSensor_count(sensor_count + 1);
-    shapes.addElement(shapeTemplate.sensor(sensor_count));
+    storage.addElement(shapeTemplate.sensor(sensor_count));
   }
 
   function addDevice() {
     setDevice_count(device_count + 1);
-    shapes.addElement(shapeTemplate.device(device_count));
+    storage.addElement(shapeTemplate.device(device_count));
   }
 
   function resetLocalStorage() {
-    localStorage.removeItem("dragItems");
+    // storage.resetLocalStorage();
+    localStorage.removeItem("floors");
   }
 
   return (
     <div className="flex flex-row gap-4 w-screen h-screen bg-blue-300">
-      {/* <NavBar selecting={1} className="left"></NavBar> this is  */}
       <section className="left w-[96px]">
         {/*the 96px is pre-calculated, fixed */}
         <NavigationBar></NavigationBar>
@@ -87,7 +81,7 @@ function ControlPage() {
 
       <section className="right flex-grow bg-red-300 h-screen p-4">
         <h2 className="text-xl font-bold">Selected Elements</h2>
-        <ItemPanel itemInfo={shapes.selectedElement}></ItemPanel>
+        <ItemPanel itemInfo={storage.selectedElement}></ItemPanel>
       </section>
     </div>
   );

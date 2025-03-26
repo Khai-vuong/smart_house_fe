@@ -44,6 +44,75 @@ export default function template() {
         color: "ff0000",
         data: null,
       };
+    },
+
+    importRectangle: (room) => {
+      return {
+        id: `rectangle-${room.room_id}`,
+        type: "rectangle",
+        x: room.x,
+        y: room.y,
+        z: useStore.getState().items.length,
+        width: room.width * 50,
+        height: room.length * 50,
+        label: room.room_name,
+        color: room.color ? room.color : "0000ff",
+      };
+    },
+
+    importSensor: (sensor) => {
+      return {
+        id: `sensor-${sensor.sensor_id}`,
+        type: "sensor",
+        x: sensor.x,
+        y: sensor.y,
+        z: useStore.getState().items.length,
+        width: 50,
+        height: 50,
+        label: sensor.sensor_name,
+        color: sensor.color ? sensor.color : "00ff00",
+        data: sensor.value ? sensor.value : null,
+      };
+    },
+
+    importDevice: (device) => {
+      return {
+        id: `device-${device.device_id}`,
+        type: "device",
+        x: device.x,
+        y: device.y,
+        z: useStore.getState().items.length,
+        width: 50,
+        height: 50,
+        label: device.device_name,
+        color: device.color? device.color : "ff0000",
+        data: device.status ? device.status : null,
+      };
+    },
+
+    importFloor: (floor) => {
+      // return [];
+      const itemsInRooms = floor.rooms.reduce((acc, room) => {
+        return acc.concat(
+          template().importRectangle(room),
+          ...room.devices.map(template().importDevice),
+          ...room.sensors.map(template().importSensor)
+        );
+      }, []);
+    
+
+      console.log("Floor devices" + floor.devices);
+      floor.devices.map((device) => console.log(`device ${JSON.stringify(device)}`));
+      
+      //Error in mock
+      const devicesInFloor = floor.devices.reduce((acc, device) => {
+        return [...acc, template().importDevice(device)]
+      }, []);
+      const sensorsInFloor = floor.sensors.reduce((acc, sensor) => {
+        return [...acc, template().importSensor(sensor)]
+      }, []);
+
+      return [...itemsInRooms, ...devicesInFloor, ...sensorsInFloor];
     }
   };
 }
