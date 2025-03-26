@@ -2,6 +2,7 @@ import { useRoutes } from "react-router-dom";
 import HomeTemplate from "../template/HomeTemplate/HomeTemplate.jsx";
 import HomePage from "../pages/HomePage/homepage.jsx";
 import LoginRegister from "../pages/LoginRegister/loginRegister.jsx";
+import ControlPage from "../pages/ControlPage.jsx";
 
 const useRouterCustome = () => {
   const router = useRoutes([
@@ -11,7 +12,7 @@ const useRouterCustome = () => {
       children: [
         {
           index: true,
-          element: <HomePage/>,
+          element: <HomePage />,
         },
       ],
     },
@@ -25,7 +26,10 @@ const useRouterCustome = () => {
         },
       ],
     },
-
+    {
+      path: "/control",
+      element: <ControlPage />,
+    },
   ]);
   return router;
 };

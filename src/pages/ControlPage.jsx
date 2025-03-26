@@ -1,4 +1,5 @@
-import NavBar from "../components/Navbar.jsx";
+// import NavBar from "../components/Navbar.jsx";
+import NavigationBar from "../component/NavBar/navbar.jsx";
 import Drag_n_drop from "../components/Drag_n_drop.jsx";
 import ItemPanel from "../components/ItemPanel.jsx";
 import template from "../utils/dragable_template.js";
@@ -53,7 +54,11 @@ function ControlPage() {
 
   return (
     <div className="flex flex-row gap-4 w-screen h-screen bg-blue-300">
-      <NavBar selecting={1} className="left"></NavBar>
+      {/* <NavBar selecting={1} className="left"></NavBar> this is  */}
+      <section className="left w-[96px]">
+        {/*the 96px is pre-calculated, fixed */}
+        <NavigationBar></NavigationBar>
+      </section>
 
       <section className="mid flex flex-col gap-4 w-3/5 h-full flex-grow-0">
         <div className="w-full h-[60vh] flex-grow-0">
