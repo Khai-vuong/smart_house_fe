@@ -1,20 +1,10 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import HomePage from "./pages/HomePage";
-import ControlPage from "./pages/ControlPage";
 import "./App.css";
 
+import useRouterCustome from "./hooks/useRouterCustome.jsx";
+
 function App() {
-  return (
-    <>
-      {" "}
-      <Router>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/control" element={<ControlPage />}></Route>
-        </Routes>
-      </Router>
-    </>
-  );
+  const router = useRouterCustome();
+  return router;
 }
 
 export default App;
