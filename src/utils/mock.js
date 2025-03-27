@@ -43,44 +43,36 @@ export function getMockApi() {
                 ],
                 devices: [
                     {
-                        device: {
-                            device_id: 3,
-                            device_type: "light",
-                            device_name: "Đèn tầng 1",
-                            status: {}
-                        },
+                        device_id: 3,
+                        device_type: "light",
+                        device_name: "Đèn tầng 1",
+                        status: {},
                         x: 10,
                         y: 5
                     },
                     {
-                        device: {
-                            device_id: 4,
-                            device_type: "light",
-                            device_name: "Đèn phòng 1",
-                            status: {}
-                        },
+                        device_id: 4,
+                        device_type: "light",
+                        device_name: "Đèn phòng 1",
+                        status: {},
                         x: 2,
                         y: 2
                     },
                     {
-                        device: {
-                            device_id: 5,
-                            device_type: "light",
-                            device_name: "Đèn phòng 2",
-                            status: {}
-                        },
+                        device_id: 5,
+                        device_type: "light",
+                        device_name: "Đèn phòng 2",
+                        status: {},
                         x: 6,
                         y: 2
                     }
                 ],
                 sensors: [
                     {
-                        sensor: {
-                            sensor_id: 1,
-                            sensor_type: "temperature_humidity",
-                            sensor_name: "Cảm biến tầng 1",
-                            value: {}
-                        },
+                        sensor_id: 1,
+                        sensor_type: "temperature_humidity",
+                        sensor_name: "Cảm biến tầng 1",
+                        value: {},
                         x: 2,
                         y: 1
                     }
@@ -140,54 +132,47 @@ export function getMockApi() {
                 ],
                 devices: [
                     {
-                        device: {
-                            device_id: 8,
-                            device_type: "light",
-                            device_name: "Đèn tầng 2",
-                            status: {}
-                        },
+                        device_id: 8,
+                        device_type: "light",
+                        device_name: "Đèn tầng 2",
+                        status: {},
                         x: 10,
                         y: 5
                     },
                     {
-                        device: {
-                            device_id: 9,
-                            device_type: "light",
-                            device_name: "Đèn phòng 3",
-                            status: {}
-                        },
+                        device_id: 9,
+                        device_type: "light",
+                        device_name: "Đèn phòng 3",
+                        status: {},
+                        
                         x: 2,
                         y: 6
                     },
                     {
-                        device: {
-                            device_id: 11,
-                            device_type: "light",
-                            device_name: "Đèn phòng 4",
-                            status: {}
-                        },
+                        device_id: 11,
+                        device_type: "light",
+                        device_name: "Đèn phòng 4",
+                        status: {},
                         x: 6,
                         y: 6
                     },
                     {
-                        device: {
-                            device_id: 12,
-                            device_type: "light",
-                            device_name: "Đèn phòng 5",
-                            status: {}
-                        },
+                        device_id: 12,
+                        device_type: "light",
+                        device_name: "Đèn phòng 5",
+                        status: {},
+                        
                         x: 10,
                         y: 6
                     }
                 ],
                 sensors: [
                     {
-                        sensor: {
-                            sensor_id: 2,
-                            sensor_type: "temperature_humidity",
-                            sensor_name: "Cảm biến tầng 2",
-                            value: {}
-                        },
+                        sensor_id: 2,
+                        sensor_type: "temperature_humidity",
+                        sensor_name: "Cảm biến tầng 2",
+                        value: {},
+                        
                         x: 2,
                         y: 1
                     }

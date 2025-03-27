@@ -1,4 +1,6 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
+
 
 // Load saved floors from localStorage
 const getSavedFloors = () => {
@@ -12,6 +14,12 @@ const useStore = create((set) => ({
     numOfDevices: 0,
     numOfSensors: 0,
 
+    getState: () => JSON.parse(JSON.stringify(useStore.getState())),
+
+    loading: true,
+
+    setLoaded: () => set({ loading: false }),
+
   floors: getSavedFloors(), // Load saved floors
   selectedElement: null, // Store the selected element
   currentFloor: 0, // Track the current floor
@@ -23,6 +31,19 @@ const useStore = create((set) => ({
         ...(updatedFloors[state.currentFloor] || []), 
         newElement
       ];
+
+      // Increase the number of elements
+      if (newElement.type === "room") {
+        set((state) => ({ numOfRooms: state.numOfRooms + 1 })); 
+      }
+      else if (newElement.type === "device") {
+        set((state) => ({ numOfDevices: state.numOfDevices + 1 })); 
+      }
+      else if (newElement.type === "sensor") {
+        set((state) => ({ numOfSensors: state.numOfSensors + 1 }));
+      }
+
+      //Update the floors
       localStorage.setItem("floors", JSON.stringify(updatedFloors)); // Save to localStorage
       return { floors: updatedFloors };
     }),

@@ -1,10 +1,10 @@
 // import NavBar from "../components/Navbar.jsx";
 import NavigationBar from "../component/NavBar/navbar.jsx";
-import Drag_n_drop from "../components/Drag_n_drop.jsx";
 import ItemPanel from "../components/ItemPanel.jsx";
 import template from "../utils/dragable_template.js";
 
 import { useEffect, useState } from "react";
+import Drag_n_drop from "../components/Drag_n_dropNew.jsx"; //Fix this
 import useStore from "../utils/useStoreNew.js"; //Fix this
 import { getMockApi } from "../utils/mock.js"; //Fix this
 
@@ -13,32 +13,28 @@ function ControlPage() {
   const storage = useStore();
   const shapeTemplate = template();
 
-  const [rectangle_count, setRectangle_count] = useState(0);
-  const [floor_count, setFloor_count] = useState(0);
-  const [device_count, setDevice_count] = useState(0);
-  const [sensor_count, setSensor_count] = useState(0);
+  //Error: import dnd -> import dragable -> require storage.floors before storage is initialized
 
   useEffect(() => {
     const house = getMockApi();
     house.floors.forEach((floor) => {
       storage.addFloor(shapeTemplate.importFloor(floor));
     });
-  }, []);
+  }, []); //Works as inteded
 
   function addRectangle() {
-    setRectangle_count(rectangle_count + 1);
-
-    storage.addElement(shapeTemplate.rectangle(rectangle_count));
+    const roomCount = storage.getState().numOfRooms;
+    storage.addElement(shapeTemplate.rectangle(roomCount));
   }
 
   function addSensor() {
-    setSensor_count(sensor_count + 1);
-    storage.addElement(shapeTemplate.sensor(sensor_count));
+    const sensorCount = storage.getState().numOfSensors;
+    storage.addElement(shapeTemplate.sensor(sensorCount));
   }
 
   function addDevice() {
-    setDevice_count(device_count + 1);
-    storage.addElement(shapeTemplate.device(device_count));
+    const deviceCount = storage.getState().numOfDevices;
+    storage.addElement(shapeTemplate.device(deviceCount));
   }
 
   function resetLocalStorage() {
