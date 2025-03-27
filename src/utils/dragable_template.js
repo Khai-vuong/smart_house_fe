@@ -100,8 +100,6 @@ export default function template() {
         );
       }, []);
     
-
-      console.log("Floor devices" + floor.devices);
       floor.devices.map((device) => console.log(`device ${JSON.stringify(device)}`));
       
       const devicesInFloor = floor.devices.reduce((acc, device) => {

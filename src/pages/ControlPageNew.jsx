@@ -12,15 +12,9 @@ function ControlPage() {
   // Ensure useStore is correctly used
   const storage = useStore();
   const shapeTemplate = template();
-
-  //Error: import dnd -> import dragable -> require storage.floors before storage is initialized
-
-  useEffect(() => {
-    const house = getMockApi();
-    house.floors.forEach((floor) => {
-      storage.addFloor(shapeTemplate.importFloor(floor));
-    });
-  }, []); //Works as inteded
+  const [selectedElement, setSelectedElement] = useState(
+    storage.selectedElement
+  );
 
   function addRectangle() {
     const roomCount = storage.getState().numOfRooms;
@@ -77,7 +71,7 @@ function ControlPage() {
 
       <section className="right flex-grow bg-red-300 h-screen p-4">
         <h2 className="text-xl font-bold">Selected Elements</h2>
-        <ItemPanel itemInfo={storage.selectedElement}></ItemPanel>
+        <ItemPanel></ItemPanel>
       </section>
     </div>
   );

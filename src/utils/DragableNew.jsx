@@ -1,10 +1,9 @@
-import Loader from "../utils/loader";
 import { useDraggable } from "@dnd-kit/core";
 import useStore from "../utils/useStore";
 import { useState, useEffect } from "react";
 
 const Draggable = ({ id, item }) => {
-  const { selectElement, floors, currentFloor } = useStore(); // Destructure all needed values upfront
+  const { selectElement, selectedElement } = useStore();
   const { x, y, z, width, height, color, label } = item;
 
   const { attributes, listeners, setNodeRef, transform } = useDraggable({ id });
@@ -25,6 +24,7 @@ const Draggable = ({ id, item }) => {
 
   function clickHandler() {
     selectElement(id);
+    alert("selected id: " + id + "\n " + JSON.stringify(selectedElement));
   }
 
   return (

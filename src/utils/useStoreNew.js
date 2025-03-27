@@ -9,16 +9,12 @@ const getSavedFloors = () => {
 };
 
 const useStore = create((set) => ({
-    numOfFloors: 0,
-    numOfRooms: 0,
-    numOfDevices: 0,
-    numOfSensors: 0,
+  numOfFloors: 0,
+  numOfRooms: 0,
+  numOfDevices: 0,
+  numOfSensors: 0,
 
-    getState: () => JSON.parse(JSON.stringify(useStore.getState())),
-
-    loading: true,
-
-    setLoaded: () => set({ loading: false }),
+  getState: () => JSON.parse(JSON.stringify(useStore.getState())),
 
   floors: getSavedFloors(), // Load saved floors
   selectedElement: null, // Store the selected element
@@ -61,7 +57,7 @@ const useStore = create((set) => ({
   selectElement: (id) =>
     set((state) => ({
       selectedElement:
-        state.floors[state.currentFloor]?.find((el) => el.id === id) || null,
+        state.floors[state.currentFloor].find((el) => el.id === id) || null,
     })),
 
   changeStyle: (id, newStyle) =>

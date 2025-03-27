@@ -1,7 +1,8 @@
 import useStore from "../utils/useStore";
 import { useState, useEffect } from "react";
 
-export default function ItemPanel({ itemInfo }) {
+export default function ItemPanel() {
+  const selectedElement = useStore((state) => state.selectedElement);
   const changeStyle = useStore((state) => state.changeStyle);
 
   const [formData, setFormData] = useState({
@@ -13,32 +14,33 @@ export default function ItemPanel({ itemInfo }) {
   });
 
   useEffect(() => {
-    if (itemInfo) {
+    if (selectedElement) {
       setFormData({
-        width: itemInfo.width || "",
-        height: itemInfo.height || "",
-        label: itemInfo.label || "",
-        color: itemInfo.color || "",
-        z: itemInfo.z || "",
+        width: selectedElement.width || "",
+        height: selectedElement.height || "",
+        label: selectedElement.label || "",
+        color: selectedElement.color || "",
+        z: selectedElement.z || "",
       });
     }
-  }, [itemInfo]);
+  }, [selectedElement]);
 
   const handleChange = (e) => {
+    alert("mod-ing" + selectedElement.id);
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
 
-    if (itemInfo?.id) {
-      changeStyle(itemInfo.id, { [name]: value });
+    if (selectedElement?.id) {
+      changeStyle(selectedElement.id, { [name]: value });
     }
   };
 
-  if (!itemInfo) return <p>No selected element</p>;
+  if (!selectedElement) return <p>No selected element</p>;
   return (
     <>
       <div
         className="grid grid-cols-2 gap-4 p-4 mt-4 w-full"
-        style={{ backgroundColor: itemInfo.color || "transparent" }}
+        style={{ backgroundColor: selectedElement.color || "transparent" }}
       >
         {["width", "height", "label", "color", "z"].map((key) => (
           <label key={key} className="flex flex-col">
@@ -57,18 +59,18 @@ export default function ItemPanel({ itemInfo }) {
           id="item-panel__color-display"
           className="bg-color rounded-2xl text-center"
           style={{
-            backgroundColor: itemInfo.color
-              ? `#${itemInfo.color}`
+            backgroundColor: selectedElement.color
+              ? `#${selectedElement.color}`
               : "transparent",
           }}
         >
-          {itemInfo.color}
+          {selectedElement.color}
         </div>
       </div>
 
       <div className="description mt-3 text-xl">
         <h1 className="font-bold underline">Object's info</h1>
-        {Object.entries(itemInfo).map(([key, value]) => (
+        {Object.entries(selectedElement).map(([key, value]) => (
           <p key={key}>
             {key}: {value}
           </p>
