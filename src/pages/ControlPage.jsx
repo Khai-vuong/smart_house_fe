@@ -1,6 +1,7 @@
 import NavigationBar from "../component/NavBar/navbar.jsx";
 import ItemPanel from "../components/ItemPanel.jsx";
 import template from "../utils/dragable_template.js";
+import { API_CONFIG, USER_CONFIG, DEFAULT_CONFIG } from "../config/appConfig";
 
 import { useEffect, useState } from "react";
 import useStore from "../utils/useStore.js";
@@ -13,10 +14,6 @@ function ControlPage() {
   // Ensure useStore is correctly used
   const storage = useStore();
   const shapeTemplate = template();
-  const [selectedElement, setSelectedElement] = useState(
-    storage.selectedElement
-  );
-  const { loading, error, saveData } = useHouseData();
   const [saveStatus, setSaveStatus] = useState({
     saving: false,
     success: false,
@@ -80,13 +77,13 @@ function ControlPage() {
 
       // Chuyển đổi dữ liệu sang định dạng API
       let apiData = {
-        uid: "26715867-5a4d-481e-906a-f74d81e66b52",
-        house_id: "6e7c741c-a231-4eaf-a9d8-360519c78b70",
+        uid: USER_CONFIG.UID,
+        house_id: USER_CONFIG.HOUSE_ID,
         length: 0,
         width: 0,
         floors: [
           {
-            floor_id: 9,
+            floor_id: DEFAULT_CONFIG.FLOOR_ID,
             rooms: [],
             devices: [],
             sensors: [],
@@ -106,7 +103,7 @@ function ControlPage() {
 
           rooms.push({
             room_id: roomId,
-            name: item.label,
+            name: item.label || `room-${roomId}`,
             length: item.height,
             width: item.width,
             x: item.x,
@@ -120,12 +117,11 @@ function ControlPage() {
           const deviceId = parseInt(item.id.split("-")[1]);
 
           devices.push({
-            device: {
-              device_id: deviceId,
-              device_type: "",
-              device_name: item.label,
-              color: item.color,
-            },
+            device_id: deviceId,
+            device_type: "",
+            device_name: item.label || `device-${deviceId}`,
+            color: item.color,
+            status: {},
             x: item.x,
             y: item.y,
           });
@@ -134,12 +130,10 @@ function ControlPage() {
           const sensorId = parseInt(item.id.split("-")[1]);
 
           sensors.push({
-            sensor: {
-              sensor_id: sensorId,
-              sensor_type: "",
-              sensor_name: item.label,
-              color: item.color,
-            },
+            sensor_id: sensorId,
+            sensor_type: "",
+            sensor_name: item.label || `sensor-${sensorId}`,
+            color: item.color,
             x: item.x,
             y: item.y,
           });
@@ -155,7 +149,7 @@ function ControlPage() {
 
       // Gửi dữ liệu lên API
       const response = await axios.post(
-        "http://localhost:3000/house/update",
+        `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.UPDATE}`,
         apiData
       );
 

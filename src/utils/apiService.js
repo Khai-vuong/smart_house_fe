@@ -1,8 +1,9 @@
 import axios from 'axios';
+import { API_CONFIG, USER_CONFIG, DEFAULT_CONFIG } from '../config/appConfig';
 
 // API endpoint
-const API_URL = 'http://localhost:3000/house/getmap?uid=26715867-5a4d-481e-906a-f74d81e66b52&house_id=6e7c741c-a231-4eaf-a9d8-360519c78b70';
-const SAVE_API_URL = 'http://localhost:3000/house/savemap';
+const API_URL = `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.GET_MAP}?uid=${USER_CONFIG.UID}&house_id=${USER_CONFIG.HOUSE_ID}`;
+const SAVE_API_URL = `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.SAVE_MAP}`;
 
 // Hàm chuyển đổi dữ liệu từ API thành định dạng initialItems
 export const convertApiDataToItems = (apiData) => {
@@ -164,7 +165,7 @@ export const convertItemsToApiData = (items) => {
         width: item.width,
         x: item.x,
         y: item.y,
-        color: item.color,
+        color: item.color || DEFAULT_CONFIG.DEFAULT_COLORS.ROOM,
         devices: [],
         sensors: []
       });
@@ -175,8 +176,8 @@ export const convertItemsToApiData = (items) => {
       devices.push({
         device_id: deviceId,
         device_type: "",
-        device_name: item.label,
-        color: item.color,
+        device_name: item.label || `device-${deviceId}`,
+        color: item.color || DEFAULT_CONFIG.DEFAULT_COLORS.DEVICE,
         status: item.data || {},
         x: item.x,
         y: item.y
@@ -188,8 +189,8 @@ export const convertItemsToApiData = (items) => {
       sensors.push({
         sensor_id: sensorId,
         sensor_type: "",
-        sensor_name: item.label,
-        color: item.color,
+        sensor_name: item.label || `sensor-${sensorId}`,
+        color: item.color || DEFAULT_CONFIG.DEFAULT_COLORS.SENSOR,
         value: item.data || {},
         x: item.x,
         y: item.y
@@ -199,12 +200,12 @@ export const convertItemsToApiData = (items) => {
   
   // Tạo cấu trúc dữ liệu API
   const apiData = {
-    house_id: "6e7c741c-a231-4eaf-a9d8-360519c78b70",
+    house_id: USER_CONFIG.HOUSE_ID,
     length: 0,
     width: 0,
     floors: [
       {
-        floor_id: 1,
+        floor_id: DEFAULT_CONFIG.FLOOR_ID,
         rooms: rooms,
         devices: devices,
         sensors: sensors
