@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { useHouseData } from "../utils/useHouseData";
-import useStore from "../utils/useStoreNew";
+import useStore from "../utils/useStore";
 import { DndContext, useDraggable, useDroppable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 

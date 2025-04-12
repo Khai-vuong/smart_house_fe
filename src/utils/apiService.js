@@ -126,6 +126,7 @@ export const convertApiDataToItems = (apiData) => {
 export const fetchHouseMap = async () => {
   try {
     const response = await axios.get(API_URL);
+    alert("Res\n" + JSON.stringify(response, null, 2))
     return response.data;
   } catch (error) {
     console.error('Error fetching house map:', error);
@@ -232,6 +233,7 @@ export const saveHouseMap = async (items) => {
 export const fetchHouseData = async (setItemsFromApi) => {
   try {
     const items = await getHouseItems();
+    alert("Get " + JSON.stringify(items, null, 2))
     if (items && items.length > 0) {
       setItemsFromApi(items);
       return true;

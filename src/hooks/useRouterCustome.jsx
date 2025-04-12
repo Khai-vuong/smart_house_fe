@@ -2,8 +2,7 @@ import { useRoutes } from "react-router-dom";
 import HomeTemplate from "../template/HomeTemplate/HomeTemplate.jsx";
 import HomePage from "../pages/HomePage/homepage.jsx";
 import LoginRegister from "../pages/LoginRegister/loginRegister.jsx";
-// import ControlPage from "../pages/ControlPage.jsx";
-import ControlPage from "../pages/ControlPageNew.jsx";
+import ControlPage from "../pages/ControlPage.jsx";
 
 const useRouterCustome = () => {
   const router = useRoutes([

@@ -1,4 +1,4 @@
-import useStore from "../utils/useStoreNew";
+import useStore from "../utils/useStore";
 import { useState, useEffect } from "react";
 
 export default function ItemPanel() {

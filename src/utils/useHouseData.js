@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getHouseItems, saveHouseMap } from './apiService';
-import useStore from './useStoreNew';
+import useStore from './useStore';
 
 export const useHouseData = () => {
   const [loading, setLoading] = useState(true);
