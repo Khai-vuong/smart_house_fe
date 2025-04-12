@@ -1,123 +1,105 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
+const initialItems = [
+  // Rectangle
+  {
+    id: 'rectangle-1',
+    type: 'rectangle',
+    x: 50,
+    y: 50,
+    z: 0,
+    width: 200,
+    height: 150,
+    label: 'Room 1',
+    color: '0000ff'
+  },
+  // 9 Devices
+  ...Array(9).fill(null).map((_, index) => ({
+    id: `device-${index + 1}`,
+    type: 'device',
+    x: 300 + (index % 3) * 100,
+    y: 50 + Math.floor(index / 3) * 100,
+    z: index + 1,
+    width: 50,
+    height: 50,
+    label: `Device ${index + 1}`,
+    color: 'ff0000',
+    data: null
+  })),
+  // 5 Sensors
+  ...Array(5).fill(null).map((_, index) => ({
+    id: `sensor-${index + 1}`,
+    type: 'sensor',
+    x: 50 + index * 100,
+    y: 300,
+    z: index + 10,
+    width: 50,
+    height: 50,
+    label: `Sensor ${index + 1}`,
+    color: '00ff00',
+    data: null
+  }))
+];
 
-// Load saved floors from localStorage
-const getSavedFloors = () => {
-  const saved = localStorage.getItem("floors");
-  return saved ? JSON.parse(saved) : [];
-};
-
-const useStore = create((set) => ({
-  numOfFloors: 0,
-  numOfRooms: 0,
-  numOfDevices: 0,
-  numOfSensors: 0,
-
-  getState: () => JSON.parse(JSON.stringify(useStore.getState())),
-
-  floors: getSavedFloors(), // Load saved floors
-  selectedElement: null, // Store the selected element
-  currentFloor: 0, // Track the current floor
-
-  addElement: (newElement) =>
-    set((state) => {
-      const updatedFloors = [...state.floors];
-      updatedFloors[state.currentFloor] = [
-        ...(updatedFloors[state.currentFloor] || []), 
-        newElement
-      ];
-
-      // Increase the number of elements
-      if (newElement.type === "room") {
-        set((state) => ({ numOfRooms: state.numOfRooms + 1 })); 
-      }
-      else if (newElement.type === "device") {
-        set((state) => ({ numOfDevices: state.numOfDevices + 1 })); 
-      }
-      else if (newElement.type === "sensor") {
-        set((state) => ({ numOfSensors: state.numOfSensors + 1 }));
-      }
-
-      //Update the floors
-      localStorage.setItem("floors", JSON.stringify(updatedFloors)); // Save to localStorage
-      return { floors: updatedFloors };
-    }),
+const useStore = create((set, get) => ({
+  items: initialItems,
+  selectedElement: null,
+  hasUnsavedChanges: false,
 
   updateElement: (id, newX, newY) =>
-    set((state) => {
-      const updatedFloors = [...state.floors];
-      updatedFloors[state.currentFloor] = updatedFloors[state.currentFloor].map((el) =>
-        el.id === id ? { ...el, x: newX, y: newY } : el
-      );
-      localStorage.setItem("floors", JSON.stringify(updatedFloors)); // Save to localStorage
-      return { floors: updatedFloors };
-    }),
+    set((state) => ({
+      items: state.items.map((item) =>
+        item.id === id ? { ...item, x: newX, y: newY } : item
+      ),
+      hasUnsavedChanges: true,
+    })),
 
   selectElement: (id) =>
     set((state) => ({
-      selectedElement:
-        state.floors[state.currentFloor].find((el) => el.id === id) || null,
+      selectedElement: state.items.find((item) => item.id === id) || null,
     })),
 
   changeStyle: (id, newStyle) =>
-    set((state) => {
-      const updatedFloors = [...state.floors];
-      updatedFloors[state.currentFloor] = updatedFloors[state.currentFloor].map((el) =>
-        el.id === id ? { ...el, ...newStyle } : el
-      );
-      localStorage.setItem("floors", JSON.stringify(updatedFloors)); // Save to localStorage
-      return { floors: updatedFloors };
-    }),
-
-  setCurrentFloor: (floorIndex) =>
-    set(() => ({
-      currentFloor: floorIndex,
+    set((state) => ({
+      items: state.items.map((item) =>
+        item.id === id ? { ...item, ...newStyle } : item
+      ),
+      hasUnsavedChanges: true,
+    })),
+    
+  // Thêm hàm mới để cập nhật dữ liệu của phần tử
+  updateElementData: (id, newData) =>
+    set((state) => ({
+      items: state.items.map((item) =>
+        item.id === id ? { ...item, data: { ...item.data, ...newData } } : item
+      ),
+      hasUnsavedChanges: true,
     })),
 
-    addFloor: (newFloor) =>
-      set((state) => {
-        const updatedFloors = [...state.floors, newFloor];
-        localStorage.setItem("floors", JSON.stringify(updatedFloors)); // Save to localStorage
-        return { floors: updatedFloors };
-      }),
+  resetItems: () => 
+    set(() => ({
+      items: initialItems,
+      selectedElement: null,
+      hasUnsavedChanges: false,
+    })),
     
-    removeFloor: (index) =>
-      set((state) => {
-        const updatedFloors = state.floors.filter((_, i) => i !== index);
-        localStorage.setItem("floors", JSON.stringify(updatedFloors)); // Save to localStorage
-        return { floors: updatedFloors };
-      }),
-
-  
-    updateStats: () => 
-        set((state) => {
-            const numOfFloors = state.floors.length;
-            let numOfRooms = 0;
-            let numOfDevices = 0;
-            let numOfSensors = 0;
-            
-            state.floors.forEach((floor) => {
-              floor.forEach((item) => {
-                if (item.type === "room") {
-                  numOfRooms += 1;
-                } else if (item.type === "device") {
-                  numOfDevices += 1;
-                } else if (item.type === "sensor") {
-                  numOfSensors += 1;
-                }
-              });
-            });
-
-            localStorage.setItem("floors", JSON.stringify(state.floors)); // Save to localStorage
-            return { numOfFloors, numOfRooms, numOfDevices, numOfSensors };
-    }),
-
-    resetStorage: () => set(() => {
-        localStorage.removeItem("floors");
-        return { floors: [], selectedElement: null, currentFloor: 0 };
-    }),
-
+  // Thêm hàm mới để cập nhật items từ API
+  setItemsFromApi: (apiItems) =>
+    set(() => ({
+      items: apiItems,
+      selectedElement: null,
+      hasUnsavedChanges: false,
+    })),
+    
+  // Hàm để đánh dấu đã lưu
+  markAsSaved: () =>
+    set(() => ({
+      hasUnsavedChanges: false,
+    })),
+    
+  // Hàm để lấy trạng thái có thay đổi chưa lưu
+  getHasUnsavedChanges: () => get().hasUnsavedChanges,
 }));
 
 export default useStore;

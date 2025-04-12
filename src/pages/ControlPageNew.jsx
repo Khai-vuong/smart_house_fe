@@ -7,6 +7,10 @@ import { useEffect, useState } from "react";
 import Drag_n_drop from "../components/Drag_n_dropNew.jsx"; //Fix this
 import useStore from "../utils/useStoreNew.js"; //Fix this
 import { getMockApi } from "../utils/mock.js"; //Fix this
+import HouseMap from "../components/HouseMap.jsx";
+import { useHouseData } from "../utils/useHouseData.js";
+import axios from "axios";
+import { fetchHouseData } from "../utils/apiService.js";
 
 function ControlPage() {
   // Ensure useStore is correctly used
@@ -15,6 +19,40 @@ function ControlPage() {
   const [selectedElement, setSelectedElement] = useState(
     storage.selectedElement
   );
+  const { loading, error, saveData } = useHouseData();
+  const [saveStatus, setSaveStatus] = useState({
+    saving: false,
+    success: false,
+    message: "",
+  });
+  const [isLoading, setIsLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(null);
+
+  // Fetch dữ liệu từ API khi trang web được tải hoặc refresh
+  useEffect(() => {
+    const loadData = async () => {
+      setIsLoading(true);
+      setFetchError(null);
+
+      try {
+        const success = await fetchHouseData(storage.setItemsFromApi);
+        if (!success) {
+          setFetchError(
+            "Không thể tải dữ liệu từ API. Sử dụng dữ liệu mặc định."
+          );
+        }
+      } catch (error) {
+        console.error("Lỗi khi tải dữ liệu:", error);
+        setFetchError(
+          "Lỗi khi tải dữ liệu: " + (error.message || "Không xác định")
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadData();
+  }, [storage.setItemsFromApi]);
 
   function addRectangle() {
     const roomCount = storage.getState().numOfRooms;
@@ -36,6 +74,123 @@ function ControlPage() {
     localStorage.removeItem("floors");
   }
 
+  const handleSave = async () => {
+    setSaveStatus({ saving: true, success: false, message: "Đang lưu..." });
+
+    try {
+      // Lấy dữ liệu từ useStore
+      const items = storage.items;
+
+      // Chuyển đổi dữ liệu sang định dạng API
+      let apiData = {
+        uid: "26715867-5a4d-481e-906a-f74d81e66b52",
+        house_id: "6e7c741c-a231-4eaf-a9d8-360519c78b70",
+        length: 0,
+        width: 0,
+        floors: [
+          {
+            floor_id: 9,
+            rooms: [],
+            devices: [],
+            sensors: [],
+          },
+        ],
+      };
+
+      // Phân loại các phần tử
+      const rooms = [];
+      const devices = [];
+      const sensors = [];
+
+      items.forEach((item) => {
+        if (item.type === "rectangle") {
+          // Lấy room_id từ id (rectangle-1 -> 1)
+          const roomId = parseInt(item.id.split("-")[1]);
+
+          rooms.push({
+            room_id: roomId,
+            name: item.label,
+            length: item.height,
+            width: item.width,
+            x: item.x,
+            y: item.y,
+            color: item.color,
+            devices: [],
+            sensors: [],
+          });
+        } else if (item.type === "device") {
+          // Lấy device_id từ id (device-1 -> 1)
+          const deviceId = parseInt(item.id.split("-")[1]);
+
+          devices.push({
+            device: {
+              device_id: deviceId,
+              device_type: "",
+              device_name: item.label,
+              color: item.color,
+            },
+            x: item.x,
+            y: item.y,
+          });
+        } else if (item.type === "sensor") {
+          // Lấy sensor_id từ id (sensor-1 -> 1)
+          const sensorId = parseInt(item.id.split("-")[1]);
+
+          sensors.push({
+            sensor: {
+              sensor_id: sensorId,
+              sensor_type: "",
+              sensor_name: item.label,
+              color: item.color,
+            },
+            x: item.x,
+            y: item.y,
+          });
+        }
+      });
+
+      // Cập nhật dữ liệu API
+      apiData.floors[0].rooms = rooms;
+      apiData.floors[0].devices = devices;
+      apiData.floors[0].sensors = sensors;
+
+      console.log("Before send\n" + JSON.stringify(apiData, null, 2));
+
+      // Gửi dữ liệu lên API
+      const response = await axios.post(
+        "http://localhost:3000/house/update",
+        apiData
+      );
+
+      console.log("Res\n" + JSON.stringify(response.data, null, 2));
+
+      if (response.status === 201) {
+        setSaveStatus({
+          saving: false,
+          success: true,
+          message: "Đã lưu thành công!",
+        });
+
+        // Đánh dấu đã lưu trong useStore
+        storage.markAsSaved();
+
+        // Ẩn thông báo sau 3 giây
+        setTimeout(() => {
+          setSaveStatus({ saving: false, success: false, message: "" });
+        }, 3000);
+      } else {
+        throw new Error("Lỗi khi lưu dữ liệu");
+      }
+    } catch (error) {
+      console.error("Lỗi khi lưu dữ liệu:", error);
+      setSaveStatus({
+        saving: false,
+        success: false,
+        message: "Lỗi khi lưu dữ liệu: " + (error.message || "Không xác định"),
+      });
+    }
+  };
+
   return (
     <div className="flex flex-row gap-4 w-screen h-screen bg-blue-300">
       <section className="left w-[96px]">
@@ -44,13 +199,26 @@ function ControlPage() {
       </section>
 
       <section className="mid flex flex-col gap-4 w-3/5 h-full flex-grow-0">
-        <div className="w-full h-[60vh] flex-grow-0">
-          <Drag_n_drop></Drag_n_drop>
+        <div className="w-full h-[60vh] flex-grow-0 overflow-hidden">
+          {isLoading ? (
+            <div className="w-full h-full flex items-center justify-center">
+              <div className="text-xl font-bold">Đang tải dữ liệu...</div>
+            </div>
+          ) : fetchError ? (
+            <div className="w-full h-full flex items-center justify-center">
+              <div className="text-xl font-bold text-red-500">{fetchError}</div>
+            </div>
+          ) : (
+            <div className="w-full h-full">
+              {/* Sử dụng HouseMap thay vì Drag_n_drop */}
+              <HouseMap />
+            </div>
+          )}
         </div>
 
         <div
           id="control__panel"
-          className="bg-purple-300 flex-grow-1 flex flex-row"
+          className="bg-purple-300 flex-grow-1 flex flex-row mt-4"
         >
           <div className="buttons flex flex-col gap-2 w-1/4 mt-4 ml-4">
             <button onClick={addSensor} className="btn btn-warning">
@@ -65,6 +233,27 @@ function ControlPage() {
             <button onClick={resetLocalStorage} className="btn btn-warning">
               Add floor
             </button>
+            <button
+              onClick={handleSave}
+              className={`btn ${
+                saveStatus.saving ? "btn-disabled" : "btn-success"
+              }`}
+              disabled={saveStatus.saving}
+            >
+              {saveStatus.saving ? "Đang lưu..." : "Lưu thay đổi"}
+            </button>
+
+            {saveStatus.message && (
+              <div
+                className={`mt-2 p-2 rounded ${
+                  saveStatus.success
+                    ? "bg-green-200 text-green-800"
+                    : "bg-red-200 text-red-800"
+                }`}
+              >
+                {saveStatus.message}
+              </div>
+            )}
           </div>
         </div>
       </section>

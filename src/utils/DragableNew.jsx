@@ -1,9 +1,8 @@
 import { useDraggable } from "@dnd-kit/core";
-import useStore from "../utils/useStore";
-import { useState, useEffect } from "react";
+import useStore from "./useStore";
 
 const Draggable = ({ id, item }) => {
-  const { selectElement, selectedElement } = useStore();
+  const { selectElement } = useStore();
   const { x, y, z, width, height, color, label } = item;
 
   const { attributes, listeners, setNodeRef, transform } = useDraggable({ id });
@@ -19,12 +18,17 @@ const Draggable = ({ id, item }) => {
     cursor: "grab",
     transform: transform
       ? `translate(${transform.x}px, ${transform.y}px)`
-      : "none", // Fix: Keeps final position after dropping
+      : "none",
+    border: "1px solid black",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    userSelect: "none",
   };
 
-  function clickHandler() {
+  function handleClick(e) {
+    e.stopPropagation();
     selectElement(id);
-    alert("selected id: " + id + "\n " + JSON.stringify(selectedElement));
   }
 
   return (
@@ -33,7 +37,7 @@ const Draggable = ({ id, item }) => {
       {...listeners}
       {...attributes}
       style={style}
-      onPointerUp={clickHandler}
+      onClick={handleClick}
     >
       {label}
     </div>
