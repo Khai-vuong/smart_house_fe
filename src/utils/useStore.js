@@ -1,6 +1,11 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
+// Hàm tạo số ID ngẫu nhiên 6 chữ số
+const generateRandomId = () => {
+  return Math.floor(100000 + Math.random() * 900000); // Tạo số ngẫu nhiên 6 chữ số (100000-999999)
+};
+
 const initialItems = [
   // Rectangle
   {
@@ -100,6 +105,19 @@ const useStore = create((set, get) => ({
     
   // Hàm để lấy trạng thái có thay đổi chưa lưu
   getHasUnsavedChanges: () => get().hasUnsavedChanges,
+  
+  // Hàm để thêm phần tử mới
+  addElement: (element) =>
+    set((state) => ({
+      items: [...state.items, element],
+      hasUnsavedChanges: true,
+    })),
+    
+  // Hàm để lấy số lượng phần tử theo loại
+  getElementCount: (type) => {
+    const state = get();
+    return state.items.filter(item => item.type === type).length;
+  }
 }));
 
 export default useStore;

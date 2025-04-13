@@ -10,6 +10,11 @@ import { useHouseData } from "../utils/useHouseData.js";
 import axios from "axios";
 import { fetchHouseData } from "../utils/apiService.js";
 
+// Hàm tạo số ID ngẫu nhiên 6 chữ số
+const generateRandomId = () => {
+  return Math.floor(100000 + Math.random() * 900000); // Tạo số ngẫu nhiên 6 chữ số (100000-999999)
+};
+
 function ControlPage() {
   // Ensure useStore is correctly used
   const storage = useStore();
@@ -49,18 +54,59 @@ function ControlPage() {
   }, [storage.setItemsFromApi]);
 
   function addRectangle() {
-    const roomCount = storage.getState().numOfRooms;
-    storage.addElement(shapeTemplate.rectangle(roomCount));
+    const roomCount = storage.getElementCount("rectangle") + 1;
+    const randomId = generateRandomId();
+    const newRoom = {
+      id: `rectangle-${randomId}`,
+      type: "rectangle",
+      x: 50 + (roomCount - 1) * 220,
+      y: 50,
+      z: 0,
+      width: 200,
+      height: 150,
+      label: `Phòng ${roomCount}`,
+      color: "b19cd9", // Màu tím pastel nhạt
+      localId: roomCount, // Lưu ID cục bộ để hiển thị
+    };
+    storage.addElement(newRoom);
   }
 
   function addSensor() {
-    const sensorCount = storage.getState().numOfSensors;
-    storage.addElement(shapeTemplate.sensor(sensorCount));
+    const sensorCount = storage.getElementCount("sensor") + 1;
+    const randomId = generateRandomId();
+    const newSensor = {
+      id: `sensor-${randomId}`,
+      type: "sensor",
+      x: 50 + (sensorCount - 1) * 70,
+      y: 50,
+      z: sensorCount + 10,
+      width: 50,
+      height: 50,
+      label: `Cảm biến ${sensorCount}`,
+      color: "a8d5ba", // Màu xanh lá pastel nhạt
+      data: null,
+      localId: sensorCount, // Lưu ID cục bộ để hiển thị
+    };
+    storage.addElement(newSensor);
   }
 
   function addDevice() {
-    const deviceCount = storage.getState().numOfDevices;
-    storage.addElement(shapeTemplate.device(deviceCount));
+    const deviceCount = storage.getElementCount("device") + 1;
+    const randomId = generateRandomId();
+    const newDevice = {
+      id: `device-${randomId}`,
+      type: "device",
+      x: 300 + ((deviceCount - 1) % 3) * 100,
+      y: 50 + Math.floor((deviceCount - 1) / 3) * 100,
+      z: deviceCount,
+      width: 50,
+      height: 50,
+      label: `Thiết bị ${deviceCount}`,
+      color: "f7cac9", // Màu hồng pastel nhạt
+      data: null,
+      localId: deviceCount, // Lưu ID cục bộ để hiển thị
+    };
+    storage.addElement(newDevice);
   }
 
   function resetLocalStorage() {
@@ -183,14 +229,13 @@ function ControlPage() {
   };
 
   return (
-    <div className="flex flex-row gap-4 w-screen h-screen bg-blue-300">
-      <section className="left w-[96px]">
-        {/*the 96px is pre-calculated, fixed */}
+    <div className="flex flex-row gap-4 w-screen h-screen  bg-purple-50">
+      <section className="left w-[96px] bg-white shadow-md">
         <NavigationBar></NavigationBar>
       </section>
 
       <section className="mid flex flex-col gap-4 w-3/5 h-full flex-grow-0">
-        <div className="w-full h-[60vh] flex-grow-0 overflow-hidden">
+        <div className="w-full h-[90vh] flex-grow-0 overflow-hidden bg-white rounded-lg shadow-md">
           {isLoading ? (
             <div className="w-full h-full flex items-center justify-center">
               <div className="text-xl font-bold">Đang tải dữ liệu...</div>
@@ -201,7 +246,6 @@ function ControlPage() {
             </div>
           ) : (
             <div className="w-full h-full">
-              {/* Sử dụng HouseMap thay vì Drag_n_drop */}
               <HouseMap />
             </div>
           )}
@@ -209,28 +253,88 @@ function ControlPage() {
 
         <div
           id="control__panel"
-          className="bg-purple-300 flex-grow-1 flex flex-row mt-4"
+          className="bg-white rounded-lg shadow-md flex-grow-1 flex flex-row mt-4 h-32 p-4"
         >
-          <div className="buttons flex flex-col gap-2 w-1/4 mt-4 ml-4">
-            <button onClick={addSensor} className="btn btn-warning">
+          <div className="buttons flex flex-row gap-4 mt-4 ml-4 w-full justify-center items-center">
+            <button
+              onClick={addSensor}
+              className="btn btn-warning h-10 w-1/5 rounded-lg shadow-md hover:shadow-lg flex items-center justify-center transition-all duration-200 hover:bg-yellow-500 text-white font-medium"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5 mr-2"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                />
+              </svg>
               Add sensor
             </button>
-            <button onClick={addDevice} className="btn btn-warning">
+            <button
+              onClick={addDevice}
+              className="btn btn-warning h-10 w-1/5 rounded-lg shadow-md hover:shadow-lg flex items-center justify-center transition-all duration-200 hover:bg-yellow-500 text-white font-medium"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5 mr-2"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"
+                />
+              </svg>
               Add device
             </button>
-            <button onClick={addRectangle} className="btn btn-warning">
-              Add rectangle
-            </button>
-            <button onClick={resetLocalStorage} className="btn btn-warning">
-              Add floor
+            <button
+              onClick={addRectangle}
+              className="btn btn-warning h-10 w-1/5 rounded-lg shadow-md hover:shadow-lg flex items-center justify-center transition-all duration-200 hover:bg-yellow-500 text-white font-medium"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5 mr-2"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
+                />
+              </svg>
+              Add room
             </button>
             <button
+              className="btn btn-success h-10 w-1/5 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center hover:bg-green-600 text-white font-medium"
               onClick={handleSave}
-              className={`btn ${
-                saveStatus.saving ? "btn-disabled" : "btn-success"
-              }`}
               disabled={saveStatus.saving}
             >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5 mr-2"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"
+                />
+              </svg>
               {saveStatus.saving ? "Đang lưu..." : "Lưu thay đổi"}
             </button>
 
@@ -249,9 +353,13 @@ function ControlPage() {
         </div>
       </section>
 
-      <section className="right flex-grow bg-red-300 h-screen p-4">
-        <h2 className="text-xl font-bold">Selected Elements</h2>
-        <ItemPanel></ItemPanel>
+      <section className="right flex-grow bg-white rounded-lg shadow-md h-screen p-4">
+        <h2 className="text-xl font-bold mb-4 pb-2 border-b border-gray-200 text-purple-700">
+          Selected Elements
+        </h2>
+        <div className="bg-purple-50 rounded-lg p-4 shadow-inner">
+          <ItemPanel></ItemPanel>
+        </div>
       </section>
     </div>
   );

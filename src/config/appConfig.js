@@ -10,7 +10,7 @@ export const API_CONFIG = {
 
 // Cấu hình người dùng và nhà
 export const USER_CONFIG = {
-  UID: '6d0670ff-42fd-494e-960f-41aeb5573ee1',
+  UID: '90709bb0-814b-4e32-b8be-9819f0617a26',
   HOUSE_ID: 'e0f1ba9c-aa1d-452e-b928-d2cc3c5eedf6'
 };
 

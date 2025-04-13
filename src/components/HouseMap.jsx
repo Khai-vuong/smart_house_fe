@@ -70,11 +70,13 @@ const HouseMap = () => {
   }
 
   return (
-    <div className="relative w-full h-screen bg-gray-100">
-      <div className="p-4">
-        <h1 className="text-2xl font-bold mb-4">Bản đồ nhà thông minh</h1>
+    <div className="relative w-full h-screen  bg-purple-50">
+      <div className="">
+        <h1 className="text-2xl font-bold py-4 pl-4 text-purple-700">
+          Bản đồ nhà thông minh
+        </h1>
 
-        <DndContext onDragEnd={handleDragEnd}>
+        <DndContext onDragEnd={handleDragEnd} className="border-2">
           <div
             ref={(node) => {
               setNodeRef(node);

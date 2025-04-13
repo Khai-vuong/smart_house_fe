@@ -127,7 +127,7 @@ export const convertApiDataToItems = (apiData) => {
 export const fetchHouseMap = async () => {
   try {
     const response = await axios.get(API_URL);
-    alert("Res\n" + JSON.stringify(response, null, 2))
+    // alert("Res\n" + JSON.stringify(response, null, 2))
     return response.data;
   } catch (error) {
     console.error('Error fetching house map:', error);
@@ -155,12 +155,12 @@ export const convertItemsToApiData = (items) => {
   
   items.forEach(item => {
     if (item.type === 'rectangle') {
-      // Lấy room_id từ id (rectangle-1 -> 1)
-      const roomId = parseInt(item.id.split('-')[1]);
+      // Lấy room_id từ localId hoặc từ id nếu không có localId
+      const roomId = item.localId || parseInt(item.id.split('-')[1]);
       
       rooms.push({
         room_id: roomId,
-        name: item.label,
+        name: item.label || `room-${roomId}`,
         length: item.height,
         width: item.width,
         x: item.x,
@@ -170,8 +170,8 @@ export const convertItemsToApiData = (items) => {
         sensors: []
       });
     } else if (item.type === 'device') {
-      // Lấy device_id từ id (device-1 -> 1)
-      const deviceId = parseInt(item.id.split('-')[1]);
+      // Lấy device_id từ localId hoặc từ id nếu không có localId
+      const deviceId = item.localId || parseInt(item.id.split('-')[1]);
       
       devices.push({
         device_id: deviceId,
@@ -183,8 +183,8 @@ export const convertItemsToApiData = (items) => {
         y: item.y
       });
     } else if (item.type === 'sensor') {
-      // Lấy sensor_id từ id (sensor-1 -> 1)
-      const sensorId = parseInt(item.id.split('-')[1]);
+      // Lấy sensor_id từ localId hoặc từ id nếu không có localId
+      const sensorId = item.localId || parseInt(item.id.split('-')[1]);
       
       sensors.push({
         sensor_id: sensorId,
@@ -234,7 +234,7 @@ export const saveHouseMap = async (items) => {
 export const fetchHouseData = async (setItemsFromApi) => {
   try {
     const items = await getHouseItems();
-    alert("Get " + JSON.stringify(items, null, 2))
+    // alert("Get " + JSON.stringify(items, null, 2))
     if (items && items.length > 0) {
       setItemsFromApi(items);
       return true;
